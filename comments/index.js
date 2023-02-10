@@ -1,10 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const { randomBytes } = require("crypto");
+const cors = require("cors");
 const PORT = 4001;
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cors());
 
 const commentsByPostId = {};
 
@@ -18,7 +20,7 @@ app.post("/posts/:id/comments", (req, res) => {
   const commentId = randomBytes(4).toString("hex");
   const { content } = req.body;
   const postId = req.params.id;
-
+  
   // looking comments in existing post
   const comments = commentsByPostId[postId] || [];
 
