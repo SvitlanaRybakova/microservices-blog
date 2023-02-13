@@ -8,12 +8,13 @@ const CommentCreate = ({ id }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post(`${process.env.REACT_APP_COMMENTS_URL+id}/comments`, {
+    await axios.post(`${process.env.REACT_APP_COMMENTS_URL + id}/comments`, {
       content: comment,
     });
 
     setComment("");
   };
+
   return (
     <Form onSubmit={handleSubmit}>
       <Form.Group className="mb-3">

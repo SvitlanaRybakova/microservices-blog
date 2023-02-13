@@ -4,6 +4,8 @@ const { randomBytes } = require("crypto");
 const cors = require("cors");
 const PORT = 4001;
 const app = express();
+const axios = require("axios");
+require("dotenv").config();
 
 app.use(bodyParser.json());
 app.use(cors());
@@ -16,20 +18,35 @@ app.get("/posts/:id/comments", (req, res) => {
   res.send(commentsByPostId[postId] || []);
 });
 
-app.post("/posts/:id/comments", (req, res) => {
+app.post("/posts/:id/comments", async (req, res) => {
   const commentId = randomBytes(4).toString("hex");
   const { content } = req.body;
   const postId = req.params.id;
-  
+
   // looking comments in existing post
   const comments = commentsByPostId[postId] || [];
 
   comments.push({ id: commentId, content });
   commentsByPostId[postId] = comments;
 
+  await axios.post(process.env.EVENT_BUS_URL, {
+    type: "CommentCreated",
+    data: {
+      id: commentId,
+      content,
+      postId,
+    },
+  });
+
   res.status(201).send(comments);
 });
 
+app.post("/events", (req, res) => {
+  console.log("Received Event (comments routes)", req.body.type);
+
+  res.send({});
+});
+
 app.listen(PORT, () => {
-  console.log("Listening on", PORT);
+  console.log("Listening on", PORT, "comments");
 });

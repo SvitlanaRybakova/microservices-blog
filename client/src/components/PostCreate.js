@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Button, Container } from "react-bootstrap";
 import axios from "axios";
 
-function PostCreate() {
+function PostCreate({ isPostCreated }) {
   const [title, setTitle] = useState("");
 
   const handleSubmit = async (e) => {
@@ -11,7 +11,7 @@ function PostCreate() {
     await axios.post(process.env.REACT_APP_POSTS_URL, {
       title,
     });
-
+    isPostCreated((prevState) => !prevState);
     setTitle("");
   };
 

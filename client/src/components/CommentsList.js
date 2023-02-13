@@ -2,19 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 
-const CommentsList = ({ id }) => {
-  const [comments, setComments] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(
-        `${process.env.REACT_APP_COMMENTS_URL + id}/comments`
-      );
-      setComments(response.data);
-    };
-    fetchData();
-  }, []);
-
+const CommentsList = ({ comments }) => {
+ 
   return (
     <div>
       {comments &&

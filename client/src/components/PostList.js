@@ -3,16 +3,17 @@ import axios from "axios";
 import { Container } from "react-bootstrap";
 import PostCard from "./PostCard";
 
-const PostList = () => {
+const PostList = ({ createdPost }) => {
   const [posts, setPosts] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await axios.get(process.env.REACT_APP_POSTS_URL);
+      const response = await axios.get(process.env.REACT_APP_QUERY_URL);
+
       setPosts(response.data);
     };
     fetchData();
-  }, []);
+  }, [createdPost]);
 
   return (
     <Container>
@@ -20,7 +21,12 @@ const PostList = () => {
       <div className="d-flex flex-row flex-wrap">
         {Object.values(posts) &&
           Object.values(posts).map((post) => (
-            <PostCard key={post.id} title={post.title} id={post.id} />
+            <PostCard
+              key={post.id}
+              title={post.title}
+              id={post.id}
+              comments={post.comments}
+            />
           ))}
       </div>
     </Container>
