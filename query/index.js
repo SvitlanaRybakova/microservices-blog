@@ -1,7 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+require("dotenv").config();
+const axios = require("axios");
 
+const PORT = 4002;
 const posts = {};
 
 // Example data structure
@@ -15,18 +18,7 @@ const posts = {};
 //   }
 // }
 
-const PORT = 4002;
-const app = express();
-app.use(bodyParser.json());
-app.use(cors());
-
-app.get("/posts", (req, res) => {
-  res.send(posts);
-});
-
-app.post("/events", (req, res) => {
-  const { type, data } = req.body;
-
+const handleEvents = (type, data) => {
   if (type === "PostCreated") {
     const { id, title } = data;
 
@@ -48,11 +40,35 @@ app.post("/events", (req, res) => {
     comment.status = status;
     comment.content = content;
   }
+};
 
+const app = express();
+app.use(bodyParser.json());
+app.use(cors());
+
+app.get("/posts", (req, res) => {
+  res.send(posts);
+});
+
+app.post("/events", (req, res) => {
+  const { type, data } = req.body;
+  handleEvents(type, data);
 
   res.send({});
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log("Listening on", PORT, "QUERY routes");
+
+  try {
+    const res = await axios.get(process.env.EVENT_BUS_URL);
+
+    for (let event of res.data) {
+      console.log("Processing event:", event.type);
+
+      handleEvents(event.type, event.data);
+    }
+  } catch (error) {
+    console.log("Error:", error.message);
+  }
 });
