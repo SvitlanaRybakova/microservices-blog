@@ -26,7 +26,7 @@ app.post("/posts/:id/comments", async (req, res) => {
   // looking comments in existing post
   const comments = commentsByPostId[postId] || [];
 
-  comments.push({ id: commentId, content });
+  comments.push({ id: commentId, content, status: "pending" });
   commentsByPostId[postId] = comments;
 
   await axios.post(process.env.EVENT_BUS_URL, {
@@ -35,15 +35,35 @@ app.post("/posts/:id/comments", async (req, res) => {
       id: commentId,
       content,
       postId,
+      status: "pending",
     },
   });
 
   res.status(201).send(comments);
 });
 
-app.post("/events", (req, res) => {
+app.post("/events", async (req, res) => {
   console.log("Received Event (comments routes)", req.body.type);
 
+  const { type, data } = req.body;
+
+  if (type === "CommentModerated") {
+    const { postId, id, status, content } = data;
+    const comments = commentsByPostId[postId];
+
+    const comment = comments.find((comment) => comment.id === id);
+    comment.status = status;
+
+    await axios.post(process.env.EVENT_BUS_URL, {
+      type: "CommentUpdated",
+      data: {
+        id,
+        postId,
+        status,
+        content,
+      },
+    });
+  }
   res.send({});
 });
 
