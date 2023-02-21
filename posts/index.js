@@ -42,5 +42,6 @@ app.post("/events", (req, res) => {
 });
 
 app.listen(PORT, () => {
+  console.log("The latest version 2.0");
   console.log("Listening on", PORT, "posts");
 });
