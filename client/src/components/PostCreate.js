@@ -5,10 +5,14 @@ import axios from "axios";
 function PostCreate({ isPostCreated }) {
   const [title, setTitle] = useState("");
 
+  const url = `${process.env.REACT_APP_POSTS_URL}/create`;
+  console.log("URL", url);
+  console.log("url1", `${process.env.REACT_APP_POSTS_URL}/create`);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await axios.post(process.env.REACT_APP_POSTS_URL, {
+    await axios.post(url, {
       title,
     });
     isPostCreated((prevState) => !prevState);
