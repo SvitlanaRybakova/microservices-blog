@@ -1,33 +1,33 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: posts-depl
+  name: comments-depl
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: posts
+      app: comments
   template:
     metadata:
       labels:
-        app: posts
+        app: comments
     spec:
       containers:
-        - name: posts
-          image: sviry/posts:latest
+        - name: comments
+          image: sviry/comments
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: posts-clusterip-srv
+  name: comments-srv
 spec:
   selector:
     # should match with template=>metadata=>labels=>app
-    app: posts
+    app: comments
   # may not specify due to default value will be ClusterIP
   type: ClusterIP
   ports:
-    - name: posts
+    - name: comments
       protocol: TCP
-      port: 4000
-      targetPort: 4000
+      port: 4001
+      targetPort: 4001
