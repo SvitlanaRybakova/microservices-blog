@@ -23,7 +23,7 @@ function PostCreate({ isPostCreated }) {
     <Container>
       <Form onSubmit={handleSubmit}>
         <Form.Group className="mb-3 mt-4" controlId="formGroupEmail">
-          <Form.Label>Create a New Post</Form.Label>
+          <Form.Label>Create a Post!</Form.Label>
           <Form.Control
             type="text"
             value={title}
